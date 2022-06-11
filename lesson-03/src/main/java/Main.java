@@ -74,20 +74,13 @@ public class Main {
         var cp = line.codePoints().toArray();
         for (int i : cp) {
             var c = (char) i;
-            //Java, нормальный свитч тебе прикрутили в 14-й версии. Почему???!!!
-            //Кровавый Enterprise не заслуживает нормального свитча?!
             switch (c) {
-                case '(':
-                case '[':
-                case '{':
-                    counter.push(i);
-                    break;
-                case ')':
-                case ']':
-                case '}':
+                case '(', '[', '{' -> counter.push(i);
+                case ')', ']', '}' -> {
+                    if (counter.isEmpty()) return false;
                     var bracket = (char) counter.pop();
                     if (c != getClosingBracket(bracket)) return false;
-                    break;
+                }
             }
         }
 
@@ -95,15 +88,11 @@ public class Main {
     }
 
     private static char getClosingBracket(char bracket) {
-        switch (bracket) {
-            case '(':
-                return ')';
-            case '[':
-                return ']';
-            case '{':
-                return '}';
-            default:
-                return 0;
-        }
+        return switch (bracket) {
+            case '(' -> ')';
+            case '[' -> ']';
+            case '{' -> '}';
+            default -> 0;
+        };
     }
 }
